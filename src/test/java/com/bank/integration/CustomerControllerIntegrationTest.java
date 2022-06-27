@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CustomerIntegrationTest {
+public class CustomerControllerIntegrationTest {
 
     @Autowired
     private WebTestClient client;
@@ -21,7 +21,7 @@ public class CustomerIntegrationTest {
     public void getAllClientsTest_ShouldReturnAllClients() {
         client
                 .get()
-                .uri("/v1/customer")
+                .uri("/v1/customers")
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -34,7 +34,7 @@ public class CustomerIntegrationTest {
     @DisplayName("Get customer by id")
     public void getCustomerById_shouldReturnCustomerById() {
         client.get()
-                .uri("/v1/customer/3")
+                .uri("/v1/customers/3")
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -46,7 +46,7 @@ public class CustomerIntegrationTest {
     @DisplayName("Delete customer by id")
     public void deleteCustomerById() {
         client.delete()
-                .uri("/v1/customer/3")
+                .uri("/v1/customers/3")
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -59,7 +59,7 @@ public class CustomerIntegrationTest {
     @DisplayName("Update customer")
     public void updateCustomer() {
         client.put()
-                .uri("/v1/customer")
+                .uri("/v1/customers")
                 .bodyValue("user")
                 .exchange()
                 .expectStatus()
