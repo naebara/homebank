@@ -24,13 +24,18 @@ public class AccountController {
     }
 
     @PutMapping
-    public Mono<String> updateAccount(@RequestBody String user) {
-        return Mono.just("Updated account : " + user);
+    public Mono<String> updateAccount(@RequestBody String account) {
+        return Mono.just("Updated account : " + account);
     }
 
     @PostMapping
-    public Mono<String> createAccount(@RequestBody String user) {
-        return Mono.just("Created new account : " + user);
+    public Mono<String> createAccount(@RequestBody String account) {
+        return Mono.just("Created new account : " + account);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public Flux<String> getAllAccountsForCustomer(@PathVariable Integer customerId) {
+        return Flux.just("Accounts for customer with id: " + customerId);
     }
 
 }

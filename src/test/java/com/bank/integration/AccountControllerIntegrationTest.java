@@ -92,4 +92,15 @@ public class AccountControllerIntegrationTest {
     }
 
 
+    @Test
+    @DisplayName("Accounts for a customer")
+    public void getAllAccountsForACustomer() {
+        client
+                .get()
+                .uri("/v1/accounts/customer/4")
+                .exchange()
+                .expectBody(String.class)
+                .isEqualTo("Accounts for customer with id: 4");
+    }
+
 }
