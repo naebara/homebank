@@ -71,4 +71,20 @@ public class CustomerControllerIntegrationTest {
                 });
     }
 
+    @Test
+    @DisplayName("Create customer")
+    public void createCustomer() {
+        client.post()
+                .uri("/v1/customers")
+                .bodyValue("new customer")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(String.class)
+                .consumeWith(exchangeResult -> {
+                    String response = exchangeResult.getResponseBody();
+                    assertEquals("Created new user : new customer", response);
+                });
+    }
+
 }

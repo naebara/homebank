@@ -75,4 +75,21 @@ public class AccountControllerIntegrationTest {
                 });
     }
 
+    @Test
+    @DisplayName("CreateAccount account")
+    public void createAccount() {
+        client.post()
+                .uri("/v1/accounts")
+                .bodyValue("new account")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(String.class)
+                .consumeWith(exchangeResult -> {
+                    String response = exchangeResult.getResponseBody();
+                    assertEquals("Created new account : new account", response);
+                });
+    }
+
+
 }

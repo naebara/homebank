@@ -14,18 +14,23 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public Mono<String> getCustomerById(@PathVariable Integer id) {
+    public Mono<String> getAccountById(@PathVariable Integer id) {
         return Mono.just("Account with id " + id);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<String> deleteCustomerById(@PathVariable Integer id) {
+    public Mono<String> deleteAccountById(@PathVariable Integer id) {
         return Mono.just("Deleted account with id " + id);
     }
 
     @PutMapping
-    public Mono<String> updateCustomer(@RequestBody String user) {
+    public Mono<String> updateAccount(@RequestBody String user) {
         return Mono.just("Updated account : " + user);
+    }
+
+    @PostMapping
+    public Mono<String> createAccount(@RequestBody String user) {
+        return Mono.just("Created new account : " + user);
     }
 
 }

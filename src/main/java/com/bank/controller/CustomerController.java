@@ -28,5 +28,9 @@ public class CustomerController {
         return Mono.just("Updated user : " + user);
     }
 
-
+    @PostMapping
+    public Mono<String> createCustomer(@RequestBody String user) {
+        return Mono.just("Created new user : " + user);
+    }
+    
 }
