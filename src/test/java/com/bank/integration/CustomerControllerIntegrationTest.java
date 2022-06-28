@@ -99,6 +99,63 @@ public class CustomerControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Update customer with invalid information")
+    public void updateCustomerWithInvalidInformation() {
+
+        CustomerDto initialCustomer = CustomerDto.builder()
+                .id(1)
+                .fullName("An")
+                .phoneNumber("fgg")
+                .ssn("gfd-4442-465")
+                .address("dd")
+                .build();
+
+        client.put()
+                .uri("/v1/customers")
+                .bodyValue(initialCustomer)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    assertNotNull(responseErrors);
+                    assertEquals(4, responseErrors.size());
+                    assertTrue(responseErrors.contains("Invalid ssn information"));
+                    assertTrue(responseErrors.contains("Invalid phone number"));
+                    assertTrue(responseErrors.contains("Full name must be in range (5, 20) characters"));
+                    assertTrue(responseErrors.contains("Address must be in range (3, 50) characters"));
+                });
+    }
+
+
+    @Test
+    @DisplayName("Update customer with null values")
+    public void updateCustomerWithNullValuesInformation() {
+
+        CustomerDto initialCustomer = CustomerDto.builder().build();
+
+        client.put()
+                .uri("/v1/customers")
+                .bodyValue(initialCustomer)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    assertNotNull(responseErrors);
+                    assertEquals(6, responseErrors.size());
+                    assertTrue(responseErrors.contains("Invalid ssn information"));
+                    assertTrue(responseErrors.contains("Invalid phone number"));
+                    assertTrue(responseErrors.contains("Phone number can not be null"));
+                    assertTrue(responseErrors.contains("Address can not be null"));
+                    assertTrue(responseErrors.contains("Full name can not be null"));
+                    assertTrue(responseErrors.contains("Ssn can not be null"));
+                });
+    }
+
+    @Test
     @DisplayName("Create customer")
     public void createCustomer() {
 

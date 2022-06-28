@@ -15,8 +15,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureWebTestClient
 @WebFluxTest(controllers = AccountController.class)
@@ -26,10 +25,109 @@ public class AccountControllerIntegrationTest {
     private WebTestClient client;
 
     List<AccountDto> accounts = Arrays.asList(
-            AccountDto.builder().id(1).customerId(1).number("asdfkljasdsdfj").amount(new BigDecimal(400)).issuedAt(LocalDate.now()).build(),
-            AccountDto.builder().id(2).customerId(2).number("asdagfkljasdsdfj").amount(new BigDecimal(100)).issuedAt(LocalDate.now()).build(),
-            AccountDto.builder().id(3).customerId(3).number("asdfkafdhgljasdsdfj").amount(new BigDecimal(300)).issuedAt(LocalDate.now()).build()
+            AccountDto.builder().id(1).customerId(1).currency("EUR").iban("GB82 WEST 1234 5698 7654 32").amount(new BigDecimal(400)).issuedAt(LocalDate.now()).build(),
+            AccountDto.builder().id(2).customerId(2).currency("DDD").iban("WHAAT").amount(new BigDecimal(100)).issuedAt(LocalDate.now()).build(),
+            AccountDto.builder().id(3).customerId(3).currency("RON").iban("asdfkafdhgljasdsdfj").amount(new BigDecimal(300)).issuedAt(LocalDate.now()).build()
     );
+
+    @Test
+    @DisplayName("Update account")
+    public void updateAccount() {
+        client.put()
+                .uri("/v1/accounts")
+                .bodyValue(accounts.get(0))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AccountDto.class)
+                .consumeWith(exchangeResult -> {
+                    AccountDto response = exchangeResult.getResponseBody();
+                    assertEquals(accounts.get(0), response);
+                });
+    }
+
+    @Test
+    @DisplayName("Update account with invalid values")
+    public void updateAccountWithInvalidValues() {
+        client.put()
+                .uri("/v1/accounts")
+                .bodyValue(accounts.get(1))
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> errors = exchangeResult.getResponseBody();
+                    assertNotNull(errors);
+                    System.out.println(errors);
+                    assertTrue(errors.contains("Invalid currency"));
+                    assertTrue(errors.contains("Invalid iban"));
+                });
+    }
+
+
+    @Test
+    @DisplayName("Create account")
+    public void createAccount() {
+        client.post()
+                .uri("/v1/accounts")
+                .bodyValue(accounts.get(0))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AccountDto.class)
+                .consumeWith(exchangeResult -> {
+                    AccountDto accountDto = exchangeResult.getResponseBody();
+                    assertEquals(accountDto, accounts.get(0));
+                });
+    }
+
+    @Test
+    @DisplayName("Create account with invalid iban")
+    public void createAccountWithInvalidIban() {
+        client.post()
+                .uri("/v1/accounts")
+                .bodyValue(accounts.get(2))
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> errors = exchangeResult.getResponseBody();
+                    assertNotNull(errors);
+                    assertEquals(1, errors.size());
+                    System.out.println(errors);
+                    assertTrue(errors.contains("Invalid iban"));
+                });
+    }
+
+    @Test
+    @DisplayName("Create account with invalid currency")
+    public void createAccountWithInvalidCurrency() {
+
+        AccountDto dto = AccountDto.builder()
+                .id(1)
+                .customerId(1)
+                .currency("Halo")
+                .iban("GB82 WEST 1234 5698 7654 32")
+                .amount(new BigDecimal(400))
+                .issuedAt(LocalDate.now()).build();
+
+
+        client.post()
+                .uri("/v1/accounts")
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> errors = exchangeResult.getResponseBody();
+                    assertNotNull(errors);
+                    assertEquals(1, errors.size());
+                    assertTrue(errors.contains("Invalid currency"));
+                });
+    }
 
     @Test
     @DisplayName("Get all accounts")
@@ -72,39 +170,6 @@ public class AccountControllerIntegrationTest {
                 .isOk()
                 .expectBody(AccountDto.class)
                 .isEqualTo(accounts.get(0));
-    }
-
-
-    @Test
-    @DisplayName("Update account")
-    public void updateAccount() {
-        client.put()
-                .uri("/v1/accounts")
-                .bodyValue("myAccount")
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(AccountDto.class)
-                .consumeWith(exchangeResult -> {
-                    AccountDto response = exchangeResult.getResponseBody();
-                    assertEquals(accounts.get(0), response);
-                });
-    }
-
-    @Test
-    @DisplayName("CreateAccount account")
-    public void createAccount() {
-        client.post()
-                .uri("/v1/accounts")
-                .bodyValue("new account")
-                .exchange()
-                .expectStatus()
-                .isOk()
-                .expectBody(AccountDto.class)
-                .consumeWith(exchangeResult -> {
-                    AccountDto response = exchangeResult.getResponseBody();
-                    assertEquals(accounts.get(0), response);
-                });
     }
 
 

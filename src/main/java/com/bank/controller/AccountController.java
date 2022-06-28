@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -15,10 +16,11 @@ import java.util.List;
 public class AccountController {
 
     List<AccountDto> accounts = Arrays.asList(
-            AccountDto.builder().id(1).customerId(1).number("asdfkljasdsdfj").amount(new BigDecimal(400)).issuedAt(LocalDate.now()).build(),
-            AccountDto.builder().id(2).customerId(2).number("asdagfkljasdsdfj").amount(new BigDecimal(100)).issuedAt(LocalDate.now()).build(),
-            AccountDto.builder().id(3).customerId(3).number("asdfkafdhgljasdsdfj").amount(new BigDecimal(300)).issuedAt(LocalDate.now()).build()
+            AccountDto.builder().id(1).customerId(1).currency("EUR").iban("GB82 WEST 1234 5698 7654 32").amount(new BigDecimal(400)).issuedAt(LocalDate.now()).build(),
+            AccountDto.builder().id(2).customerId(2).currency("DDD").iban("WHAAT").amount(new BigDecimal(100)).issuedAt(LocalDate.now()).build(),
+            AccountDto.builder().id(3).customerId(3).currency("RON").iban("asdfkafdhgljasdsdfj").amount(new BigDecimal(300)).issuedAt(LocalDate.now()).build()
     );
+
 
     @GetMapping
     public Flux<AccountDto> getAllAccounts() {
@@ -36,12 +38,12 @@ public class AccountController {
     }
 
     @PutMapping
-    public Mono<AccountDto> updateAccount(@RequestBody String account) {
+    public Mono<AccountDto> updateAccount(@RequestBody @Valid AccountDto account) {
         return Mono.just(accounts.get(0));
     }
 
-    @PostMapping
-    public Mono<AccountDto> createAccount(@RequestBody String account) {
+    @PostMapping()
+    public Mono<AccountDto> createAccount(@RequestBody @Valid AccountDto accountDto) {
         return Mono.just(accounts.get(0));
     }
 

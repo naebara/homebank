@@ -35,7 +35,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public Mono<CustomerDto> updateCustomer(@RequestBody CustomerDto customerDto) {
+    public Mono<CustomerDto> updateCustomer(@RequestBody @Valid CustomerDto customerDto) {
         return Mono.just(customers.get(1));
     }
 

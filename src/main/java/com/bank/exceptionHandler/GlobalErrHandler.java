@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalErrHandler {
 
-    @ExceptionHandler(WebExchangeBindException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<List<String>> handleRequestBodyError(WebExchangeBindException ex) {
         log.error("Exception caught : {}", ex.getMessage(), ex);
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
