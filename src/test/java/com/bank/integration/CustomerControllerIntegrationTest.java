@@ -12,8 +12,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,7 +22,7 @@ public class CustomerControllerIntegrationTest {
     private WebTestClient client;
 
     List<CustomerDto> customers = Arrays.asList(
-            CustomerDto.builder().id(1).fullName("Nae Bara").phoneNumber("123456677").ssn("ddf-335-586").address("Oradea").build(),
+            CustomerDto.builder().id(1).fullName("Nae Bara").phoneNumber("123456677").ssn("123-45-6789").address("Oradea").build(),
             CustomerDto.builder().id(1).fullName("Sergiu Dan").phoneNumber("4356546").ssn("jgkj-674-546").address("Cluj").build(),
             CustomerDto.builder().id(1).fullName("Andreea Dubere").phoneNumber("2353636").ssn("gfd-4442-465").address("Bucuresti").build()
     );
@@ -113,6 +112,60 @@ public class CustomerControllerIntegrationTest {
                 .isOk()
                 .expectBody(CustomerDto.class)
                 .isEqualTo(customerDto);
+    }
+
+
+    @Test
+    @DisplayName("Create customer null values")
+    public void createCustomerWithMissingInformation() {
+
+        CustomerDto customerDto = CustomerDto.builder().build();
+
+        client.post()
+                .uri("/v1/customers")
+                .bodyValue(customerDto)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    assertNotNull(responseErrors);
+                    assertEquals(6, responseErrors.size());
+                    assertTrue(responseErrors.contains("Invalid ssn information"));
+                    assertTrue(responseErrors.contains("Ssn can not be null"));
+                    assertTrue(responseErrors.contains("Address can not be null"));
+                    assertTrue(responseErrors.contains("Full name can not be null"));
+                    assertTrue(responseErrors.contains("Invalid phone number"));
+                    assertTrue(responseErrors.contains("Phone number can not be null"));
+                });
+    }
+
+    @Test
+    @DisplayName("Create customer wrong fullname and address size")
+    public void createCustomerWithWrongAddresAndFullNameSizes() {
+
+        CustomerDto customerDto = CustomerDto.builder()
+                .ssn("123-45-6789")
+                .phoneNumber("2223334444")
+                .fullName("a").address("b").build();
+
+        client.post()
+                .uri("/v1/customers")
+                .bodyValue(customerDto)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(List.class)
+                .consumeWith(exchangeResult -> {
+                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    assertNotNull(responseErrors);
+                    System.out.println(responseErrors);
+                    assertEquals(2, responseErrors.size());
+                    assertTrue(responseErrors.contains("Address must be in range (3, 50) characters"));
+                    assertTrue(responseErrors.contains("Full name must be in range (5, 20) characters"));
+
+                });
     }
 
 }
