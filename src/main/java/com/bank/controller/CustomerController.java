@@ -1,6 +1,8 @@
 package com.bank.controller;
 
 import com.bank.model.dto.CustomerDto;
+import com.bank.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,6 +15,9 @@ import java.util.List;
 @RequestMapping("/v1/customers")
 public class CustomerController {
 
+    @Autowired
+    private CustomerService customerService;
+
     List<CustomerDto> customers = Arrays.asList(
             CustomerDto.builder().id(1).fullName("Nae Bara").phoneNumber("123456677").ssn("123-45-6789").address("Oradea").build(),
             CustomerDto.builder().id(1).fullName("Sergiu Dan").phoneNumber("4356546").ssn("jgkj-674-546").address("Cluj").build(),
@@ -21,27 +26,27 @@ public class CustomerController {
 
     @GetMapping
     public Flux<CustomerDto> getAllCustomers() {
-        return Flux.fromIterable(customers);
+        return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
     public Mono<CustomerDto> getCustomerById(@PathVariable Integer id) {
-        return Mono.just(customers.get(0));
+        return customerService.getCustomerById(id);
     }
 
     @DeleteMapping("/{id}")
     public Mono<CustomerDto> deleteCustomerById(@PathVariable Integer id) {
-        return Mono.just(customers.get(0));
+        return customerService.deleteUserById(id);
     }
 
     @PutMapping
     public Mono<CustomerDto> updateCustomer(@RequestBody @Valid CustomerDto customerDto) {
-        return Mono.just(customers.get(1));
+        return customerService.updateCustomer(customerDto);
     }
 
     @PostMapping
-    public Mono<CustomerDto> createCustomer(@RequestBody @Valid CustomerDto customer) {
-        return Mono.just(customer);
+    public Mono<CustomerDto> createCustomer(@RequestBody @Valid CustomerDto customerDto) {
+        return customerService.createUser(customerDto);
     }
 
 }

@@ -2,14 +2,18 @@ package com.bank.model.dto;
 
 import com.bank.validation.phoneNumber.PhoneNumberValidation;
 import com.bank.validation.ssn.SsnValidation;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerDto {
 
     private Integer id;

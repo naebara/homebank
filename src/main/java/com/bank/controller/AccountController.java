@@ -20,7 +20,7 @@ public class AccountController {
             AccountDto.builder().id(2).customerId(2).currency("DDD").iban("WHAAT").amount(new BigDecimal(100)).issuedAt(LocalDate.now()).build(),
             AccountDto.builder().id(3).customerId(3).currency("RON").iban("asdfkafdhgljasdsdfj").amount(new BigDecimal(300)).issuedAt(LocalDate.now()).build()
     );
-
+    
 
     @GetMapping
     public Flux<AccountDto> getAllAccounts() {

@@ -1,21 +1,26 @@
 package com.bank.integration;
 
 import com.bank.model.dto.CustomerDto;
+import com.bank.service.CustomerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @AutoConfigureWebTestClient
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CustomerControllerIntegrationTest {
 
     @Autowired
@@ -27,9 +32,15 @@ public class CustomerControllerIntegrationTest {
             CustomerDto.builder().id(1).fullName("Andreea Dubere").phoneNumber("2353636").ssn("gfd-4442-465").address("Bucuresti").build()
     );
 
+    @MockBean
+    CustomerService customerService;
+
+
     @Test
     @DisplayName("Get all customers")
-    public void getAllClientsTest_ShouldReturnAllClients() {
+    public void getAllClientsTest_ShouldReturnAllCustomers() {
+
+        when(customerService.getAllCustomers()).thenReturn(Flux.fromIterable(customers));
 
         client
                 .get()
@@ -55,6 +66,7 @@ public class CustomerControllerIntegrationTest {
     public void getCustomerById_shouldReturnCustomerById() {
 
         CustomerDto firstCustomer = customers.get(0);
+        when(customerService.getCustomerById(3)).thenReturn(Mono.just(firstCustomer));
 
         client.get()
                 .uri("/v1/customers/3")
@@ -70,6 +82,8 @@ public class CustomerControllerIntegrationTest {
     public void deleteCustomerById() {
 
         CustomerDto deletedCustomer = customers.get(0);
+
+        when(customerService.deleteUserById(3)).thenReturn(Mono.just(deletedCustomer));
 
         client.delete()
                 .uri("/v1/customers/3")
@@ -87,6 +101,8 @@ public class CustomerControllerIntegrationTest {
 
         CustomerDto initialCustomer = customers.get(0);
         CustomerDto finalCustomer = customers.get(1);
+
+        when(customerService.updateCustomer(initialCustomer)).thenReturn(Mono.just(finalCustomer));
 
         client.put()
                 .uri("/v1/customers")
@@ -160,6 +176,8 @@ public class CustomerControllerIntegrationTest {
     public void createCustomer() {
 
         CustomerDto customerDto = customers.get(0);
+
+        when(customerService.createUser(customerDto)).thenReturn(Mono.just(customerDto));
 
         client.post()
                 .uri("/v1/customers")
