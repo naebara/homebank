@@ -16,9 +16,9 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Constraint(validatedBy = IbanValidator.class)
 public @interface IbanValidation {
 
-    public String message() default "Invalid iban";
+    String message() default "Invalid iban";
 
-    public Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-    public Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

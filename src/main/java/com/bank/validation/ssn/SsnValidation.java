@@ -16,9 +16,9 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Constraint(validatedBy = SsnValidator.class)
 public @interface SsnValidation {
 
-    public String message() default "Invalid ssn information";
+    String message() default "Invalid ssn information";
 
-    public Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-    public Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

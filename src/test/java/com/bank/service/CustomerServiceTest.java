@@ -23,8 +23,8 @@ public class CustomerServiceTest {
     public void getAllCustomers() {
         Flux<CustomerDto> customers = customerService.getAllCustomers();
         StepVerifier.create(customers)
-                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea").address("Oradea").phoneNumber("2224445558").ssn("343-25-5859").build())
-                .expectNext(CustomerDto.builder().id(2).fullName("Sergiu Gal").address("Satu Mare").phoneNumber("46645345").ssn("354-12-7742").build())
+                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea1").address("Mures").phoneNumber("2224445558").ssn("343-25-5859").build())
+                .expectNext(CustomerDto.builder().id(2).fullName("Sergiu Gal1").address("Satu Mare").phoneNumber("46645345").ssn("354-12-7742").build())
                 .verifyComplete();
 
 
@@ -37,7 +37,7 @@ public class CustomerServiceTest {
     public void getCustomerById() {
         Mono<CustomerDto> customer = customerService.getCustomerById(1);
         StepVerifier.create(customer)
-                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea").address("Oradea").phoneNumber("2224445558").ssn("343-25-5859").build())
+                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea1").address("Mures").phoneNumber("2224445558").ssn("343-25-5859").build())
                 .verifyComplete();
     }
 
@@ -80,7 +80,7 @@ public class CustomerServiceTest {
     public void deleteCustomer() {
         Mono<CustomerDto> deletedUser = customerService.deleteUserById(1);
         StepVerifier.create(deletedUser)
-                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea").address("Oradea").phoneNumber("2224445558").ssn("343-25-5859").build())
+                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea1").address("Mures").phoneNumber("2224445558").ssn("343-25-5859").build())
                 .verifyComplete();
     }
 

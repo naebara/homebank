@@ -16,9 +16,9 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Constraint(validatedBy = CurrencyValidator.class)
 public @interface CurrencyValidation {
 
-    public String message() default "Invalid currency";
+    String message() default "Invalid currency";
 
-    public Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-    public Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

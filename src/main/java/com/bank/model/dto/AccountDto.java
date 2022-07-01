@@ -2,8 +2,10 @@ package com.bank.model.dto;
 
 import com.bank.validation.currency.CurrencyValidation;
 import com.bank.validation.iban.IbanValidation;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,8 @@ import java.time.LocalDate;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountDto {
 
     private Integer id;

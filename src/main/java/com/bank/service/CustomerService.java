@@ -12,10 +12,9 @@ import reactor.core.publisher.Mono;
 @Service
 public class CustomerService {
 
+    ModelMapper mapper = new ModelMapper();
     @Autowired
     private CustomerRepository customerRepository;
-
-    ModelMapper mapper = new ModelMapper();
 
     public Flux<CustomerDto> getAllCustomers() {
         return customerRepository

@@ -26,15 +26,15 @@ public class CustomerControllerIntegrationTest {
     @Autowired
     private WebTestClient client;
 
+    @MockBean
+    CustomerService customerService;
+
+
     List<CustomerDto> customers = Arrays.asList(
             CustomerDto.builder().id(1).fullName("Nae Bara").phoneNumber("123456677").ssn("123-45-6789").address("Oradea").build(),
             CustomerDto.builder().id(1).fullName("Sergiu Dan").phoneNumber("4356546").ssn("jgkj-674-546").address("Cluj").build(),
             CustomerDto.builder().id(1).fullName("Andreea Dubere").phoneNumber("2353636").ssn("gfd-4442-465").address("Bucuresti").build()
     );
-
-    @MockBean
-    CustomerService customerService;
-
 
     @Test
     @DisplayName("Get all customers")
@@ -58,13 +58,11 @@ public class CustomerControllerIntegrationTest {
                     assertEquals(customers.get(1), response.get(1));
                     assertEquals(customers.get(2), response.get(2));
                 });
-
     }
 
     @Test
     @DisplayName("Get customer by id")
     public void getCustomerById_shouldReturnCustomerById() {
-
         CustomerDto firstCustomer = customers.get(0);
         when(customerService.getCustomerById(3)).thenReturn(Mono.just(firstCustomer));
 

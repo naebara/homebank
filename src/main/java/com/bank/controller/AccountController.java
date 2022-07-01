@@ -1,6 +1,8 @@
 package com.bank.controller;
 
 import com.bank.model.dto.AccountDto;
+import com.bank.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,11 +22,14 @@ public class AccountController {
             AccountDto.builder().id(2).customerId(2).currency("DDD").iban("WHAAT").amount(new BigDecimal(100)).issuedAt(LocalDate.now()).build(),
             AccountDto.builder().id(3).customerId(3).currency("RON").iban("asdfkafdhgljasdsdfj").amount(new BigDecimal(300)).issuedAt(LocalDate.now()).build()
     );
-    
+
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping
+
     public Flux<AccountDto> getAllAccounts() {
-        return Flux.fromIterable(accounts);
+        return accountService.getAllAccounts();
     }
 
     @GetMapping("/{id}")
