@@ -1,3 +1,4 @@
+drop table if exists accounts;
 drop table IF EXISTS customer;
 
 create TABLE customer (
@@ -12,15 +13,14 @@ insert into customer (fullName, address, phone_number, ssn ) values ('Dan Badea'
 insert into customer (fullName, address, phone_number, ssn ) values ('Sergiu Gal', 'Satu Mare', '46645345', '354-12-7742');
 
 
-drop table if exists accounts;
-
 create table accounts(
     id serial primary key not null,
     iban char(34),
     currency char(6),
     amount numeric,
     customer_id integer,
-    issued_at date
+    issued_at date,
+    constraint fk_customer foreign key(customer_id) references customer(id)
 );
 
 insert into accounts(iban, currency, amount, customer_id, issued_at) values ('GB82WEST12345698765432', 'EUR', 444, 1, '2022-05-07');

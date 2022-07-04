@@ -97,4 +97,40 @@ public class AccountServiceTest {
                 .expectNext(0)
                 .verifyComplete();
     }
+
+    @Test
+    public void updateAccount() {
+
+        first.setAmount(new BigDecimal(700));
+        first.setCurrency("RON");
+        first.setIssuedAt(LocalDate.of(2021, Month.JANUARY, 21));
+        first.setIban("GB49BARC20039567466878");
+        first.setCustomerId(2);
+
+        Mono<AccountDto> updated = accountService.updateAccount(first);
+        StepVerifier.create(updated)
+                .expectNext(first)
+                .verifyComplete();
+    }
+
+    @Test
+    public void updateAccountSetNonExistingCustomerId() {
+
+        first.setAmount(new BigDecimal(700));
+        first.setCurrency("RON");
+        first.setIssuedAt(LocalDate.of(2021, Month.JANUARY, 21));
+        first.setIban("GB49BARC20039567466878");
+        first.setCustomerId(6);
+
+
+        Mono<AccountDto> updatedAccount = accountService.updateAccount(first);
+
+        StepVerifier.create(updatedAccount)
+                .verifyErrorMatches(err -> {
+                    String message = err.getMessage();
+                    return message.contains("Referential integrity constraint violation")
+                            && message.contains(" PUBLIC.ACCOUNTS FOREIGN KEY(CUSTOMER_ID) REFERENCES PUBLIC.CUSTOMER(ID) (6)");
+                });
+    }
+
 }

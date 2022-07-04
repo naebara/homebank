@@ -56,6 +56,9 @@ public class AccountService {
     }
 
     public Mono<AccountDto> updateAccount(AccountDto accountDto) {
-        return null;
+        Account account = mapper.map(accountDto, Account.class);
+        return template
+                .update(account).map(resultAccount -> mapper.map(resultAccount, AccountDto.class));
+
     }
 }

@@ -78,9 +78,9 @@ public class CustomerServiceTest {
 
     @Test
     public void deleteCustomer() {
-        Mono<CustomerDto> deletedUser = customerService.deleteUserById(1);
+        Mono<CustomerDto> deletedUser = customerService.deleteUserById(2);
         StepVerifier.create(deletedUser)
-                .expectNext(CustomerDto.builder().id(1).fullName("Dan Badea1").address("Mures").phoneNumber("2224445558").ssn("343-25-5859").build())
+                .expectNext(CustomerDto.builder().id(2).fullName("Sergiu Gal1").address("Satu Mare").phoneNumber("46645345").ssn("354-12-7742").build())
                 .verifyComplete();
     }
 
