@@ -34,12 +34,12 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public Mono<AccountDto> getAccountById(@PathVariable Integer id) {
-        return Mono.just(accounts.get(0));
+        return accountService.getById(id);
     }
 
     @DeleteMapping("/{id}")
     public Mono<AccountDto> deleteAccountById(@PathVariable Integer id) {
-        return Mono.just(accounts.get(0));
+        return accountService.deleteAccountById(id);
     }
 
     @PutMapping
@@ -49,12 +49,12 @@ public class AccountController {
 
     @PostMapping()
     public Mono<AccountDto> createAccount(@RequestBody @Valid AccountDto accountDto) {
-        return Mono.just(accounts.get(0));
+        return accountService.createAccount(accountDto);
     }
 
     @GetMapping("/customer/{customerId}")
     public Flux<AccountDto> getAllAccountsForCustomer(@PathVariable Integer customerId) {
-        return Flux.just(accounts.get(0), accounts.get(1));
+        return accountService.getAccountsForCustomer(customerId);
     }
 
 }

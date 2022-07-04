@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -55,7 +56,7 @@ public class AccountControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Update account with invalid values")
+    @DisplayName("Update account with invalid iban and currency")
     public void updateAccountWithInvalidValues() {
         client.put()
                 .uri("/v1/accounts")
@@ -77,6 +78,7 @@ public class AccountControllerIntegrationTest {
     @Test
     @DisplayName("Create account")
     public void createAccount() {
+        when(accountService.createAccount(accounts.get(0))).thenReturn(Mono.just(accounts.get(0)));
         client.post()
                 .uri("/v1/accounts")
                 .bodyValue(accounts.get(0))
@@ -160,6 +162,7 @@ public class AccountControllerIntegrationTest {
     @Test
     @DisplayName("Get account by id")
     public void getAccountById_shouldReturnAccountById() {
+        when(accountService.getById(3)).thenReturn(Mono.just(accounts.get(0)));
         client.get()
                 .uri("/v1/accounts/3")
                 .exchange()
@@ -172,6 +175,7 @@ public class AccountControllerIntegrationTest {
     @Test
     @DisplayName("Delete account by id")
     public void deleteAccountById() {
+        when(accountService.deleteAccountById(3)).thenReturn(Mono.just(accounts.get(0)));
         client.delete()
                 .uri("/v1/accounts/3")
                 .exchange()
@@ -185,9 +189,12 @@ public class AccountControllerIntegrationTest {
     @Test
     @DisplayName("Accounts for a customer")
     public void getAllAccountsForACustomer() {
+
+        when(accountService.getAccountsForCustomer(3)).thenReturn(Flux.just(accounts.get(0), accounts.get(1)));
+
         client
                 .get()
-                .uri("/v1/accounts/customer/4")
+                .uri("/v1/accounts/customer/3")
                 .exchange()
                 .expectBodyList(AccountDto.class)
                 .consumeWith(exchangeResult -> {

@@ -34,8 +34,6 @@ public class DatabaseConnectionConfiguration extends AbstractR2dbcConfiguration 
     @Override
     @Bean
     public ConnectionFactory connectionFactory() {
-
-        System.out.println("Profle isss : " + profile);
         if (profile.equals("dev")) {
             return new PostgresqlConnectionFactory(PostgresqlConnectionConfiguration.builder()
                     .host("localhost")

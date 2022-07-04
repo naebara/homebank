@@ -9,6 +9,7 @@ import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 @Service
@@ -32,4 +33,20 @@ public class AccountService {
                 .map(a -> mapper.map(a, AccountDto.class));
     }
 
+    public Mono<AccountDto> getById(Integer id) {
+        return null;
+    }
+
+    public Mono<AccountDto> deleteAccountById(Integer id) {
+        return null;
+    }
+
+    public Flux<AccountDto> getAccountsForCustomer(Integer id) {
+
+        return null;
+    }
+
+    public Mono<AccountDto> createAccount(AccountDto accountDto) {
+        return null;
+    }
 }
