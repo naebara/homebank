@@ -38,13 +38,13 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<AccountDto> deleteAccountById(@PathVariable Integer id) {
+    public Mono<Integer> deleteAccountById(@PathVariable Integer id) {
         return accountService.deleteAccountById(id);
     }
 
     @PutMapping
-    public Mono<AccountDto> updateAccount(@RequestBody @Valid AccountDto account) {
-        return Mono.just(accounts.get(0));
+    public Mono<AccountDto> updateAccount(@RequestBody @Valid AccountDto accountDto) {
+        return accountService.updateAccount(accountDto);
     }
 
     @PostMapping()

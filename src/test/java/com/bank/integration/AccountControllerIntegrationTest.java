@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,17 @@ public class AccountControllerIntegrationTest {
     @Test
     @DisplayName("Update account")
     public void updateAccount() {
-        when(accountService.getAllAccounts()).thenReturn(Flux.fromIterable(accounts));
+        AccountDto initialAccount = accounts.get(0);
+        AccountDto updatedAccount = AccountDto.builder()
+                .id(initialAccount.getId())
+                .iban("GB78BARC20035383547217")
+                .amount(new BigDecimal("30.0"))
+                .issuedAt(LocalDate.of(2020, Month.JANUARY, 3))
+                .currency("RON")
+                .build();
+
+        when(accountService.updateAccount(initialAccount)).thenReturn(Mono.just(updatedAccount));
+
         client.put()
                 .uri("/v1/accounts")
                 .bodyValue(accounts.get(0))
@@ -51,8 +62,26 @@ public class AccountControllerIntegrationTest {
                 .expectBody(AccountDto.class)
                 .consumeWith(exchangeResult -> {
                     AccountDto response = exchangeResult.getResponseBody();
-                    assertEquals(accounts.get(0), response);
+                    assertNotNull(response);
+                    assertEquals(updatedAccount, response);
                 });
+    }
+
+    @Test
+    @DisplayName("Update non existing account")
+    public void updateNonExistingAccount() {
+        AccountDto initialAccount = accounts.get(0);
+
+        when(accountService.updateAccount(initialAccount)).thenReturn(Mono.empty());
+
+        client.put()
+                .uri("/v1/accounts")
+                .bodyValue(accounts.get(0))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Mono.class)
+                .isEqualTo(null);
     }
 
     @Test
@@ -175,14 +204,14 @@ public class AccountControllerIntegrationTest {
     @Test
     @DisplayName("Delete account by id")
     public void deleteAccountById() {
-        when(accountService.deleteAccountById(3)).thenReturn(Mono.just(accounts.get(0)));
+        when(accountService.deleteAccountById(3)).thenReturn(Mono.just(1));
         client.delete()
                 .uri("/v1/accounts/3")
                 .exchange()
                 .expectStatus()
                 .isOk()
-                .expectBody(AccountDto.class)
-                .isEqualTo(accounts.get(0));
+                .expectBody(Integer.class)
+                .isEqualTo(1);
     }
 
 

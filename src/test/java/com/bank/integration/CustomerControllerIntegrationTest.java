@@ -76,6 +76,19 @@ public class CustomerControllerIntegrationTest {
     }
 
     @Test
+    public void getNonExistingCustomer() {
+        when(customerService.getCustomerById(3)).thenReturn(Mono.empty());
+
+        client.get()
+                .uri("/v1/customers/3")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Mono.class)
+                .isEqualTo(null);
+    }
+
+    @Test
     @DisplayName("Delete customer by id")
     public void deleteCustomerById() {
 
@@ -92,6 +105,20 @@ public class CustomerControllerIntegrationTest {
                 .isEqualTo(deletedCustomer);
     }
 
+    @Test
+    @DisplayName("Delete non existing customer by id")
+    public void deleteNonExistingCustomerById() {
+
+        when(customerService.deleteUserById(3)).thenReturn(Mono.empty());
+
+        client.delete()
+                .uri("/v1/customers/3")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Mono.class)
+                .isEqualTo(null);
+    }
 
     @Test
     @DisplayName("Update customer")
@@ -110,6 +137,22 @@ public class CustomerControllerIntegrationTest {
                 .isOk()
                 .expectBody(CustomerDto.class)
                 .isEqualTo(finalCustomer);
+    }
+
+    @Test
+    @DisplayName("Update non existing customer")
+    public void updateNonExistingCustomer() {
+        CustomerDto initialCustomer = customers.get(0);
+        when(customerService.updateCustomer(initialCustomer)).thenReturn(Mono.empty());
+
+        client.put()
+                .uri("/v1/customers")
+                .bodyValue(initialCustomer)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(Mono.class)
+                .isEqualTo(null);
     }
 
     @Test

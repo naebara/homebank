@@ -7,9 +7,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static org.springframework.data.r2dbc.query.Criteria.where;
 
 
 @Service
@@ -34,11 +37,13 @@ public class AccountService {
     }
 
     public Mono<AccountDto> getById(Integer id) {
-        return null;
+        return template
+                .selectOne(Query.query(where("id").is(id)), Account.class)
+                .map(account -> mapper.map(account, AccountDto.class));
     }
 
-    public Mono<AccountDto> deleteAccountById(Integer id) {
-        return null;
+    public Mono<Integer> deleteAccountById(Integer id) {
+        return template.delete(Query.query(where("id").is(id)), Account.class);
     }
 
     public Flux<AccountDto> getAccountsForCustomer(Integer id) {
@@ -47,6 +52,10 @@ public class AccountService {
     }
 
     public Mono<AccountDto> createAccount(AccountDto accountDto) {
+        return null;
+    }
+
+    public Mono<AccountDto> updateAccount(AccountDto accountDto) {
         return null;
     }
 }

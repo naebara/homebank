@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j
-public class GlobalErrHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<List<String>> handleRequestBodyError(WebExchangeBindException ex) {
