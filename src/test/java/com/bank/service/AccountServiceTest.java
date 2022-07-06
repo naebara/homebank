@@ -16,12 +16,11 @@ import java.time.Month;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) // spin up la context pt fiecare test
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AccountServiceTest {
 
     @Autowired
     private AccountService accountService;
-
 
     AccountDto first = AccountDto.builder()
             .id(1)
@@ -143,4 +142,40 @@ public class AccountServiceTest {
                 .verifyErrorMessage("Customer with id 6 was not found!");
     }
 
+    @Test
+    public void createNewAccount() {
+        AccountDto newAccountInfo = AccountDto.builder()
+                .iban("GB37BARC20038472725482")
+                .currency("EUR")
+                .customerId(2)
+                .amount(new BigDecimal("700.0"))
+                .issuedAt(LocalDate.of(2000, Month.JANUARY, 1))
+                .build();
+
+        Mono<AccountDto> responseAccountDto = accountService.createAccount(newAccountInfo);
+
+        responseAccountDto.subscribe(res -> {
+            assertEquals(3, res.getId());
+            assertEquals(newAccountInfo.getIban(), res.getIban());
+            assertEquals(newAccountInfo.getAmount(), res.getAmount());
+            assertEquals(newAccountInfo.getCurrency(), res.getCurrency());
+            assertEquals(newAccountInfo.getCustomerId(), res.getCustomerId());
+            assertEquals(newAccountInfo.getIssuedAt(), res.getIssuedAt());
+        });
+    }
+
+    @Test
+    public void getAccountsForCustomer() {
+        Flux<AccountDto> accountsForCustomer = accountService.getAccountsForCustomer(1);
+        StepVerifier.create(accountsForCustomer)
+                .expectNext(first, second)
+                .verifyComplete();
+    }
+
+    @Test
+    public void getAccountsForNonExistingCustomer() {
+        Flux<AccountDto> accountsForCustomer = accountService.getAccountsForCustomer(14);
+        StepVerifier.create(accountsForCustomer)
+                .verifyErrorMessage("Customer with id 14 was not found!");
+    }
 }

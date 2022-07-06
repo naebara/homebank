@@ -4,6 +4,7 @@ import com.bank.config.DatabaseConnectionConfiguration;
 import com.bank.exception.AccountNotFoundException;
 import com.bank.exception.CustomerNotFoundException;
 import com.bank.model.domain.Account;
+import com.bank.model.domain.Customer;
 import com.bank.model.dto.AccountDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +52,18 @@ public class AccountService {
     }
 
     public Flux<AccountDto> getAccountsForCustomer(Integer id) {
-        return null;
+        return template
+                .selectOne(Query.query(where("id").is(id)), Customer.class)
+                .switchIfEmpty(Mono.error(new CustomerNotFoundException(id)))
+                .flatMapMany(customer -> template.select(Query.query(where("customer_id").is(id)), Account.class))
+                .map(account -> mapper.map(account, AccountDto.class));
     }
 
     public Mono<AccountDto> createAccount(AccountDto accountDto) {
-        return null;
+        Account account = mapper.map(accountDto, Account.class);
+        return template.insert(Account.class)
+                .using(account)
+                .map(a -> mapper.map(a, AccountDto.class));
     }
 
     public Mono<AccountDto> updateAccount(AccountDto accountDto) {

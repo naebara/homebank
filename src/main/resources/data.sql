@@ -9,8 +9,9 @@ create TABLE customer (
     ssn char(11)
 );
 
-insert into customer (fullName, address, phone_number, ssn ) values ('Dan Badea', 'Oradea', '2224445558', '343-25-5859');
-insert into customer (fullName, address, phone_number, ssn ) values ('Sergiu Gal', 'Satu Mare', '46645345', '354-12-7742');
+insert into customer (fullName, address, phone_number, ssn ) values ('Florin Dumitrescu', 'Oradea', '2224445558', '343-25-5859');
+insert into customer (fullName, address, phone_number, ssn ) values ('Sorin Bontea', 'Satu Mare', '46645345', '354-12-7742');
+insert into customer (fullName, address, phone_number, ssn ) values ('Catalin Scarlatescu', 'Bucuresti', '46645345', '354-12-7742');
 
 
 create table accounts(
