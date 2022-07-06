@@ -1,6 +1,7 @@
 package com.bank.integration;
 
 import com.bank.controller.AccountController;
+import com.bank.exception.ExceptionResponse;
 import com.bank.model.dto.AccountDto;
 import com.bank.service.AccountService;
 import org.junit.jupiter.api.DisplayName;
@@ -93,13 +94,14 @@ public class AccountControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> errors = exchangeResult.getResponseBody();
-                    assertNotNull(errors);
-                    System.out.println(errors);
-                    assertTrue(errors.contains("Invalid currency"));
-                    assertTrue(errors.contains("Invalid iban"));
+                    ExceptionResponse exception = exchangeResult.getResponseBody();
+
+//                    assertNotNull(errors);
+//                    System.out.println(errors);
+//                    assertTrue(errors.contains("Invalid currency"));
+//                    assertTrue(errors.contains("Invalid iban"));
                 });
     }
 
@@ -130,13 +132,12 @@ public class AccountControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> errors = exchangeResult.getResponseBody();
-                    assertNotNull(errors);
-                    assertEquals(1, errors.size());
-                    System.out.println(errors);
-                    assertTrue(errors.contains("Invalid iban"));
+                    ExceptionResponse exceptionResponse = exchangeResult.getResponseBody();
+                    assertNotNull(exceptionResponse);
+                    assertEquals(1, exceptionResponse.getErrors().size());
+                    assertTrue(exceptionResponse.getErrors().contains("Invalid iban"));
                 });
     }
 
@@ -159,12 +160,12 @@ public class AccountControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> errors = exchangeResult.getResponseBody();
-                    assertNotNull(errors);
-                    assertEquals(1, errors.size());
-                    assertTrue(errors.contains("Invalid currency"));
+                    ExceptionResponse exceptionResponse = exchangeResult.getResponseBody();
+                    assertNotNull(exceptionResponse);
+                    assertEquals(1, exceptionResponse.getErrors().size());
+                    assertTrue(exceptionResponse.getErrors().contains("Invalid currency"));
                 });
     }
 

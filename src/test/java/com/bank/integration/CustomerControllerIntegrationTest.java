@@ -1,5 +1,6 @@
 package com.bank.integration;
 
+import com.bank.exception.ExceptionResponse;
 import com.bank.model.dto.CustomerDto;
 import com.bank.service.CustomerService;
 import org.junit.jupiter.api.DisplayName;
@@ -173,15 +174,16 @@ public class CustomerControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    ExceptionResponse responseErrors = exchangeResult.getResponseBody();
                     assertNotNull(responseErrors);
-                    assertEquals(4, responseErrors.size());
-                    assertTrue(responseErrors.contains("Invalid ssn information"));
-                    assertTrue(responseErrors.contains("Invalid phone number"));
-                    assertTrue(responseErrors.contains("Full name must be in range (5, 20) characters"));
-                    assertTrue(responseErrors.contains("Address must be in range (3, 50) characters"));
+                    List<String> errors = responseErrors.getErrors();
+                    assertEquals(4, errors.size());
+                    assertTrue(errors.contains("Invalid ssn information"));
+                    assertTrue(errors.contains("Invalid phone number"));
+                    assertTrue(errors.contains("Full name must be in range (5, 20) characters"));
+                    assertTrue(errors.contains("Address must be in range (3, 50) characters"));
                 });
     }
 
@@ -198,17 +200,18 @@ public class CustomerControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    ExceptionResponse responseErrors = exchangeResult.getResponseBody();
                     assertNotNull(responseErrors);
-                    assertEquals(6, responseErrors.size());
-                    assertTrue(responseErrors.contains("Invalid ssn information"));
-                    assertTrue(responseErrors.contains("Invalid phone number"));
-                    assertTrue(responseErrors.contains("Phone number can not be null"));
-                    assertTrue(responseErrors.contains("Address can not be null"));
-                    assertTrue(responseErrors.contains("Full name can not be null"));
-                    assertTrue(responseErrors.contains("Ssn can not be null"));
+                    List<String> errors = responseErrors.getErrors();
+                    assertEquals(6, errors.size());
+                    assertTrue(errors.contains("Invalid ssn information"));
+                    assertTrue(errors.contains("Invalid phone number"));
+                    assertTrue(errors.contains("Phone number can not be null"));
+                    assertTrue(errors.contains("Address can not be null"));
+                    assertTrue(errors.contains("Full name can not be null"));
+                    assertTrue(errors.contains("Ssn can not be null"));
                 });
     }
 
@@ -243,17 +246,18 @@ public class CustomerControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> responseErrors = exchangeResult.getResponseBody();
+                    ExceptionResponse responseErrors = exchangeResult.getResponseBody();
                     assertNotNull(responseErrors);
-                    assertEquals(6, responseErrors.size());
-                    assertTrue(responseErrors.contains("Invalid ssn information"));
-                    assertTrue(responseErrors.contains("Ssn can not be null"));
-                    assertTrue(responseErrors.contains("Address can not be null"));
-                    assertTrue(responseErrors.contains("Full name can not be null"));
-                    assertTrue(responseErrors.contains("Invalid phone number"));
-                    assertTrue(responseErrors.contains("Phone number can not be null"));
+                    List<String> errors = responseErrors.getErrors();
+                    assertEquals(6, errors.size());
+                    assertTrue(errors.contains("Invalid ssn information"));
+                    assertTrue(errors.contains("Ssn can not be null"));
+                    assertTrue(errors.contains("Address can not be null"));
+                    assertTrue(errors.contains("Full name can not be null"));
+                    assertTrue(errors.contains("Invalid phone number"));
+                    assertTrue(errors.contains("Phone number can not be null"));
                 });
     }
 
@@ -272,14 +276,13 @@ public class CustomerControllerIntegrationTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError()
-                .expectBody(List.class)
+                .expectBody(ExceptionResponse.class)
                 .consumeWith(exchangeResult -> {
-                    List<String> responseErrors = exchangeResult.getResponseBody();
-                    assertNotNull(responseErrors);
-                    System.out.println(responseErrors);
-                    assertEquals(2, responseErrors.size());
-                    assertTrue(responseErrors.contains("Address must be in range (3, 50) characters"));
-                    assertTrue(responseErrors.contains("Full name must be in range (5, 20) characters"));
+                    ExceptionResponse exceptionResponse = exchangeResult.getResponseBody();
+                    assertNotNull(exceptionResponse);
+                    assertEquals(2, exceptionResponse.getErrors().size());
+                    assertTrue(exceptionResponse.getErrors().contains("Address must be in range (3, 50) characters"));
+                    assertTrue(exceptionResponse.getErrors().contains("Full name must be in range (5, 20) characters"));
 
                 });
     }

@@ -44,7 +44,8 @@ public class CustomerServiceTest {
     @Test
     public void getCustomerById_WhenCustomerDoesNotExist() {
         Mono<CustomerDto> customer = customerService.getCustomerById(14);
-        StepVerifier.create(customer).verifyComplete();
+        StepVerifier.create(customer)
+                .verifyErrorMessage("Customer with id 14 was not found!");
     }
 
     @Test
@@ -73,7 +74,7 @@ public class CustomerServiceTest {
         Mono<CustomerDto> updatedCustomerFromDb = customerService.updateCustomer(userPresentInDbWithId1AndDifferentValues);
 
         StepVerifier.create(updatedCustomerFromDb)
-                .verifyComplete();
+                .verifyErrorMessage("Customer with id 14 was not found!");
     }
 
     @Test
@@ -95,7 +96,7 @@ public class CustomerServiceTest {
     public void deleteNonExistingCustomer() {
         Mono<CustomerDto> deletedUser = customerService.deleteUserById(15);
         StepVerifier.create(deletedUser)
-                .verifyComplete();
+                .verifyErrorMessage("Customer with id 15 was not found!");
     }
 
 
