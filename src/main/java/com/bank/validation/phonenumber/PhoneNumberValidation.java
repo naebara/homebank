@@ -1,4 +1,4 @@
-package com.bank.validation.phoneNumber;
+package com.bank.validation.phonenumber;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

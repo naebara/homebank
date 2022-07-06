@@ -1,6 +1,6 @@
 package com.bank.validation.currency;
 
-import com.bank.model.enumTypes.Currency;
+import com.bank.model.types.Currency;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

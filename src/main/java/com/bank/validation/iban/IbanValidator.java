@@ -9,15 +9,15 @@ public class IbanValidator implements ConstraintValidator<IbanValidation, String
         if (iban == null) {
             return false;
         }
-        int IBAN_MIN_SIZE = 15;
-        int IBAN_MAX_SIZE = 34;
-        long IBAN_MAX = 999999999;
-        long IBAN_MODULUS = 97;
+        int ibanMinSize = 15;
+        int ibanMaxSize = 34;
+        long ibanMax = 999999999;
+        long ibanModulus = 97;
 
         String trimmed = iban.replaceAll(" ", "");
         trimmed = trimmed.trim();
 
-        if (trimmed.length() < IBAN_MIN_SIZE || trimmed.length() > IBAN_MAX_SIZE) {
+        if (trimmed.length() < ibanMinSize || trimmed.length() > ibanMaxSize) {
             return false;
         }
 
@@ -34,11 +34,11 @@ public class IbanValidator implements ConstraintValidator<IbanValidation, String
 
             total = (charValue > 9 ? total * 100 : total * 10) + charValue;
 
-            if (total > IBAN_MAX) {
-                total = (total % IBAN_MODULUS);
+            if (total > ibanMax) {
+                total = (total % ibanModulus);
             }
         }
 
-        return (total % IBAN_MODULUS) == 1;
+        return (total % ibanModulus) == 1;
     }
 }

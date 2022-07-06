@@ -1,6 +1,6 @@
 package com.bank.model.dto;
 
-import com.bank.validation.phoneNumber.PhoneNumberValidation;
+import com.bank.validation.phonenumber.PhoneNumberValidation;
 import com.bank.validation.ssn.SsnValidation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
