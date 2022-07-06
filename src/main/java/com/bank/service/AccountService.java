@@ -1,10 +1,13 @@
 package com.bank.service;
 
 import com.bank.config.DatabaseConnectionConfiguration;
+import com.bank.exception.AccountNotFoundException;
+import com.bank.exception.CustomerNotFoundException;
 import com.bank.model.domain.Account;
 import com.bank.model.dto.AccountDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
@@ -39,6 +42,7 @@ public class AccountService {
     public Mono<AccountDto> getById(Integer id) {
         return template
                 .selectOne(Query.query(where("id").is(id)), Account.class)
+                .switchIfEmpty(Mono.error(new AccountNotFoundException(id)))
                 .map(account -> mapper.map(account, AccountDto.class));
     }
 
@@ -47,7 +51,6 @@ public class AccountService {
     }
 
     public Flux<AccountDto> getAccountsForCustomer(Integer id) {
-
         return null;
     }
 
@@ -58,7 +61,11 @@ public class AccountService {
     public Mono<AccountDto> updateAccount(AccountDto accountDto) {
         Account account = mapper.map(accountDto, Account.class);
         return template
-                .update(account).map(resultAccount -> mapper.map(resultAccount, AccountDto.class));
+                .update(account)
+                .onErrorMap(err -> err instanceof DataIntegrityViolationException ?
+                        new CustomerNotFoundException(accountDto.getCustomerId())
+                        : new AccountNotFoundException(accountDto.getId()))
+                .map(resultAccount -> mapper.map(resultAccount, AccountDto.class));
 
     }
 }

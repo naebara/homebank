@@ -79,7 +79,7 @@ public class AccountServiceTest {
     public void getNonExistingAccount() {
         Mono<AccountDto> responseAccount = accountService.getById(55);
         StepVerifier.create(responseAccount)
-                .verifyComplete();
+                .verifyErrorMessage("Account with id 55 was not found!");
     }
 
     @Test
@@ -114,6 +114,20 @@ public class AccountServiceTest {
     }
 
     @Test
+    public void updateNonExistingAccount() {
+        first.setId(55);
+        first.setAmount(new BigDecimal(700));
+        first.setCurrency("RON");
+        first.setIssuedAt(LocalDate.of(2021, Month.JANUARY, 21));
+        first.setIban("GB49BARC20039567466878");
+        first.setCustomerId(2);
+
+        Mono<AccountDto> updated = accountService.updateAccount(first);
+        StepVerifier.create(updated)
+                .verifyErrorMessage("Account with id 55 was not found!");
+    }
+
+    @Test
     public void updateAccountSetNonExistingCustomerId() {
 
         first.setAmount(new BigDecimal(700));
@@ -126,11 +140,7 @@ public class AccountServiceTest {
         Mono<AccountDto> updatedAccount = accountService.updateAccount(first);
 
         StepVerifier.create(updatedAccount)
-                .verifyErrorMatches(err -> {
-                    String message = err.getMessage();
-                    return message.contains("Referential integrity constraint violation")
-                            && message.contains(" PUBLIC.ACCOUNTS FOREIGN KEY(CUSTOMER_ID) REFERENCES PUBLIC.CUSTOMER(ID) (6)");
-                });
+                .verifyErrorMessage("Customer with id 6 was not found!");
     }
 
 }
