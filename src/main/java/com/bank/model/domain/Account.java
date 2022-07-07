@@ -1,8 +1,6 @@
 package com.bank.model.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -14,9 +12,7 @@ import java.time.LocalDate;
 
 @Table("accounts")
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Account {
 
     @Column("id")

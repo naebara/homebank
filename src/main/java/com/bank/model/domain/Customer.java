@@ -1,8 +1,6 @@
 package com.bank.model.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -11,9 +9,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("customer")
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Customer {
 
     @Column("id")

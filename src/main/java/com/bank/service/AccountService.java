@@ -24,8 +24,8 @@ public class AccountService {
 
     @Autowired
     private final DatabaseConnectionConfiguration databaseConnectionConfiguration;
-    ModelMapper mapper = new ModelMapper();
     private final R2dbcEntityTemplate template;
+    ModelMapper mapper = new ModelMapper();
 
     public AccountService(DatabaseConnectionConfiguration connectionConfiguration) {
         databaseConnectionConfiguration = connectionConfiguration;
