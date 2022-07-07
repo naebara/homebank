@@ -39,6 +39,6 @@ public class IbanValidator implements ConstraintValidator<IbanValidation, String
             }
         }
 
-        return (total % ibanModulus) == 1;
+        return total % ibanModulus == 1;
     }
 }

@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ExceptionResponse> handleError(Throwable ex) {
-        ex.printStackTrace();
+        log.error("Error : {}", ex.getMessage());
         ExceptionResponse responseError = ExceptionResponse
                 .builder()
                 .errors(Collections.singletonList(ex.getMessage()))
