@@ -1,4 +1,4 @@
-package com.bank.integration;
+package com.bank.unit;
 
 import com.bank.exception.ExceptionResponse;
 import com.bank.model.dto.CustomerDto;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class CustomerControllerIntegrationTest {
+public class CustomerControllerTest {
 
     @Autowired
     private WebTestClient client;

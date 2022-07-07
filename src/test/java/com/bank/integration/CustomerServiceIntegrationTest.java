@@ -1,6 +1,7 @@
-package com.bank.service;
+package com.bank.integration;
 
 import com.bank.model.dto.CustomerDto;
+import com.bank.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class CustomerServiceTest {
+public class CustomerServiceIntegrationTest {
 
     @Autowired
     CustomerService customerService;
