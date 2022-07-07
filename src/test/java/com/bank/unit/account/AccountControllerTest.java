@@ -1,4 +1,4 @@
-package com.bank.unit;
+package com.bank.unit.account;
 
 import com.bank.controller.AccountController;
 import com.bank.exception.ExceptionResponse;

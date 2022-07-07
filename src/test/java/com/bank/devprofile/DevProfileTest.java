@@ -9,7 +9,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import java.util.Objects;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class DevProfileTest {
 

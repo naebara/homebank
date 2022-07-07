@@ -1,4 +1,4 @@
-package com.bank.unit;
+package com.bank.unit.customer;
 
 import com.bank.exception.ExceptionResponse;
 import com.bank.model.dto.CustomerDto;
