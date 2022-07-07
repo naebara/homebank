@@ -1,4 +1,4 @@
-package com.bank.integration;
+package com.bank.integration.account;
 
 import com.bank.exception.ExceptionResponse;
 import com.bank.model.dto.AccountDto;

@@ -1,4 +1,4 @@
-package com.bank.integration;
+package com.bank.integration.customer;
 
 import com.bank.model.dto.CustomerDto;
 import com.bank.service.CustomerService;

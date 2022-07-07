@@ -1,4 +1,4 @@
-package com.bank.integration;
+package com.bank.integration.account;
 
 import com.bank.model.dto.AccountDto;
 import com.bank.service.AccountService;
