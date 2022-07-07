@@ -14,7 +14,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -108,8 +109,7 @@ public class CustomerControllerIntegrationTest {
                     ExceptionResponse response = exchangeResult.getResponseBody();
                     assertNotNull(response);
                     assertEquals(1, response.getErrors().size());
-                    assertTrue(response.getErrors().get(0).contains("Referential integrity constraint violation"));
-                    assertTrue(response.getErrors().get(0).contains("UBLIC.ACCOUNTS FOREIGN KEY(CUSTOMER_ID) REFERENCES PUBLIC.CUSTOMER(ID)"));
+                    assertEquals("Customer with id 1 has associated accounts. Delete accounts before deleting customer.", response.getErrors().get(0));
                 });
     }
 

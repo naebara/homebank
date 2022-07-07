@@ -1,5 +1,6 @@
 package com.bank.service;
 
+import com.bank.exception.CustomerHasAssociatedAccountsException;
 import com.bank.exception.CustomerNotFoundException;
 import com.bank.model.domain.Customer;
 import com.bank.model.dto.CustomerDto;
@@ -44,6 +45,7 @@ public class CustomerService {
 
         return customerRepository.findById(id)
                 .flatMap(c -> customerRepository.deleteById(id).thenReturn(c))
+                .onErrorMap(e -> new CustomerHasAssociatedAccountsException(id))
                 .switchIfEmpty(Mono.error(new CustomerNotFoundException(id)))
                 .map(c1 -> mapper.map(c1, CustomerDto.class));
 
