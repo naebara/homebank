@@ -37,6 +37,11 @@ public class AccountController {
         return accountService.getById(id);
     }
 
+    @PatchMapping
+    public Mono<AccountDto> updateAccountPatch(@RequestBody @Valid AccountDto obj) {
+        return accountService.updateAccountPatch(obj);
+    }
+
     @DeleteMapping("/{id}")
     public Mono<Integer> deleteAccountById(@PathVariable Integer id) {
         return accountService.deleteAccountById(id);

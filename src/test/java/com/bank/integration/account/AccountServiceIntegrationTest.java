@@ -23,45 +23,25 @@ public class AccountServiceIntegrationTest {
     @Autowired
     private AccountService accountService;
 
-    AccountDto first = AccountDto.builder()
-            .id(1)
-            .iban("GB82WEST12345698765432")
-            .currency("EUR")
-            .customerId(1)
-            .amount(new BigDecimal("20.0"))
-            .issuedAt(LocalDate.of(2022, Month.MAY, 7))
-            .build();
+    AccountDto first = AccountDto.builder().id(1).iban("GB82WEST12345698765432").currency("EUR").customerId(1).amount(new BigDecimal("20.0")).issuedAt(LocalDate.of(2022, Month.MAY, 7)).build();
 
-    AccountDto second = AccountDto.builder()
-            .id(2)
-            .iban("GB03BARC20038041157768")
-            .currency("RON")
-            .customerId(1)
-            .amount(new BigDecimal("10.0"))
-            .issuedAt(LocalDate.of(2022, Month.MAY, 22))
-            .build();
+    AccountDto second = AccountDto.builder().id(2).iban("GB03BARC20038041157768").currency("RON").customerId(1).amount(new BigDecimal("10.0")).issuedAt(LocalDate.of(2022, Month.MAY, 22)).build();
 
     @Test
     public void getAllAccounts() {
         Flux<AccountDto> accounts = accountService.getAllAccounts().log();
 
-        StepVerifier.create(accounts)
-                .expectNextCount(2)
-                .verifyComplete();
+        StepVerifier.create(accounts).expectNextCount(2).verifyComplete();
 
 
-        StepVerifier.create(accounts)
-                .expectNext(first, second)
-                .verifyComplete();
+        StepVerifier.create(accounts).expectNext(first, second).verifyComplete();
     }
 
     @Test
     public void getAccountById() {
         Mono<AccountDto> responseAccount = accountService.getById(1);
         assertNotNull(responseAccount);
-        StepVerifier.create(responseAccount)
-                .expectNext(first)
-                .verifyComplete();
+        StepVerifier.create(responseAccount).expectNext(first).verifyComplete();
     }
 
     @Test
@@ -78,24 +58,19 @@ public class AccountServiceIntegrationTest {
     @Test
     public void getNonExistingAccount() {
         Mono<AccountDto> responseAccount = accountService.getById(55);
-        StepVerifier.create(responseAccount)
-                .verifyErrorMessage("Account with id 55 was not found!");
+        StepVerifier.create(responseAccount).verifyErrorMessage("Account with id 55 was not found!");
     }
 
     @Test
     public void deleteAccountById() {
         Mono<Integer> deletedAccount = accountService.deleteAccountById(1);
-        StepVerifier.create(deletedAccount)
-                .expectNext(1)
-                .verifyComplete();
+        StepVerifier.create(deletedAccount).expectNext(1).verifyComplete();
     }
 
     @Test
     public void deleteNonExistingAccount() {
         Mono<Integer> deletedAccount = accountService.deleteAccountById(155);
-        StepVerifier.create(deletedAccount)
-                .expectNext(0)
-                .verifyComplete();
+        StepVerifier.create(deletedAccount).expectNext(0).verifyComplete();
     }
 
     @Test
@@ -108,9 +83,7 @@ public class AccountServiceIntegrationTest {
         first.setCustomerId(2);
 
         Mono<AccountDto> updated = accountService.updateAccount(first);
-        StepVerifier.create(updated)
-                .expectNext(first)
-                .verifyComplete();
+        StepVerifier.create(updated).expectNext(first).verifyComplete();
     }
 
     @Test
@@ -123,8 +96,7 @@ public class AccountServiceIntegrationTest {
         first.setCustomerId(2);
 
         Mono<AccountDto> updated = accountService.updateAccount(first);
-        StepVerifier.create(updated)
-                .verifyErrorMessage("Account with id 55 was not found!");
+        StepVerifier.create(updated).verifyErrorMessage("Account with id 55 was not found!");
     }
 
     @Test
@@ -139,19 +111,12 @@ public class AccountServiceIntegrationTest {
 
         Mono<AccountDto> updatedAccount = accountService.updateAccount(first);
 
-        StepVerifier.create(updatedAccount)
-                .verifyErrorMessage("Customer with id 6 was not found!");
+        StepVerifier.create(updatedAccount).verifyErrorMessage("Customer with id 6 was not found!");
     }
 
     @Test
     public void createNewAccount() {
-        AccountDto newAccountInfo = AccountDto.builder()
-                .iban("GB37BARC20038472725482")
-                .currency("EUR")
-                .customerId(2)
-                .amount(new BigDecimal("700.0"))
-                .issuedAt(LocalDate.of(2000, Month.JANUARY, 1))
-                .build();
+        AccountDto newAccountInfo = AccountDto.builder().iban("GB37BARC20038472725482").currency("EUR").customerId(2).amount(new BigDecimal("700.0")).issuedAt(LocalDate.of(2000, Month.JANUARY, 1)).build();
 
         Mono<AccountDto> responseAccountDto = accountService.createAccount(newAccountInfo);
 
@@ -168,15 +133,23 @@ public class AccountServiceIntegrationTest {
     @Test
     public void getAccountsForCustomer() {
         Flux<AccountDto> accountsForCustomer = accountService.getAccountsForCustomer(1);
-        StepVerifier.create(accountsForCustomer)
-                .expectNext(first, second)
-                .verifyComplete();
+        StepVerifier.create(accountsForCustomer).expectNext(first, second).verifyComplete();
     }
 
     @Test
     public void getAccountsForNonExistingCustomer() {
         Flux<AccountDto> accountsForCustomer = accountService.getAccountsForCustomer(14);
-        StepVerifier.create(accountsForCustomer)
-                .verifyErrorMessage("Customer with id 14 was not found!");
+        StepVerifier.create(accountsForCustomer).verifyErrorMessage("Customer with id 14 was not found!");
+    }
+
+    @Test
+    public void testUpdatePatch() {
+        AccountDto dto = AccountDto.builder().id(1).currency("DOLLAR").build();
+        Mono<AccountDto> updated = accountService.updateAccountPatch(dto);
+        Mono<AccountDto> fromDbDto = accountService.getById(1);
+
+        updated.subscribe(val ->
+                StepVerifier.create(fromDbDto).expectNext(val).verifyComplete()
+        );
     }
 }

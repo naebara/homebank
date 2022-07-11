@@ -59,6 +59,33 @@ public class AccountControllerIntegrationTest {
                 });
     }
 
+    @Test
+    @DisplayName("Update account with negative balance")
+    public void updateAccountWithNegativeBalance() {
+        AccountDto accountToUpdate = AccountDto.builder()
+                .id(accounts.get(0).getId())
+                .iban("GB78BARC20035383547217")
+                .amount(new BigDecimal("-30.0"))
+                .issuedAt(LocalDate.of(2020, Month.JANUARY, 3))
+                .currency("RON")
+                .build();
+
+
+        client.put()
+                .uri("/v1/accounts")
+                .bodyValue(accountToUpdate)
+                .exchange()
+                .expectStatus()
+                .is4xxClientError()
+                .expectBody(ExceptionResponse.class)
+                .consumeWith(exchangeResult -> {
+                    ExceptionResponse response = exchangeResult.getResponseBody();
+                    assertNotNull(response);
+                    assertEquals(1, response.getErrors().size());
+                    assertEquals("Balance can not be negative", response.getErrors().get(0));
+                });
+    }
+
 
     @Test
     @DisplayName("Update non existing account")

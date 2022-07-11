@@ -69,6 +69,32 @@ public class AccountControllerTest {
     }
 
     @Test
+    @DisplayName("Update account")
+    public void updateAccountPatch() {
+        AccountDto initialAccount = accounts.get(0);
+        AccountDto updatedAccount = AccountDto.builder()
+                .id(initialAccount.getId())
+                .iban("GB78BARC20035383547217")
+                .amount(new BigDecimal("30.0"))
+                .build();
+
+        when(accountService.updateAccountPatch(initialAccount)).thenReturn(Mono.just(updatedAccount));
+
+        client.patch()
+                .uri("/v1/accounts")
+                .bodyValue(accounts.get(0))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AccountDto.class)
+                .consumeWith(exchangeResult -> {
+                    AccountDto response = exchangeResult.getResponseBody();
+                    assertNotNull(response);
+                    assertEquals(updatedAccount, response);
+                });
+    }
+
+    @Test
     @DisplayName("Update non existing account")
     public void updateNonExistingAccount() {
         AccountDto initialAccount = accounts.get(0);
@@ -152,7 +178,6 @@ public class AccountControllerTest {
                 .iban("GB82 WEST 1234 5698 7654 32")
                 .amount(new BigDecimal(400))
                 .issuedAt(LocalDate.now()).build();
-
 
         client.post()
                 .uri("/v1/accounts")

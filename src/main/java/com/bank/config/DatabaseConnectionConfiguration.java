@@ -5,6 +5,7 @@ import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,8 @@ import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.connectionfactory.init.CompositeDatabasePopulator;
 import org.springframework.data.r2dbc.connectionfactory.init.ConnectionFactoryInitializer;
 import org.springframework.data.r2dbc.connectionfactory.init.ResourceDatabasePopulator;
+import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 
 @Configuration
 @RequiredArgsConstructor
@@ -20,6 +23,9 @@ public class DatabaseConnectionConfiguration extends AbstractR2dbcConfiguration 
 
     @Value("${spring.profiles.active}")
     private String profile;
+
+    @Autowired
+    private DatabaseConnectionConfiguration databaseConnectionConfiguration;
 
     @Bean
     public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
@@ -29,6 +35,13 @@ public class DatabaseConnectionConfiguration extends AbstractR2dbcConfiguration 
         populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("data.sql")));
         initializer.setDatabasePopulator(populator);
         return initializer;
+    }
+
+    @Bean
+    public R2dbcEntityTemplate r2dbcEntityTemplate() {
+        return new R2dbcEntityTemplate(DatabaseClient.builder().connectionFactory(
+                databaseConnectionConfiguration.connectionFactory()
+        ).build());
     }
 
     @Override
@@ -43,7 +56,6 @@ public class DatabaseConnectionConfiguration extends AbstractR2dbcConfiguration 
                     .password("admin").build());
         } else {
             return ConnectionFactories.get("r2dbc:h2:mem:///test?options=DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
-
         }
     }
 }
